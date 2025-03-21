@@ -2,6 +2,7 @@ import "./App.css";
 import RouteSwitch from "../RouteSwitch";
 import Navbar from "../Navigation/Navbar";
 import InfoTop from "../InfoTop";
+import Footer from "../Footer";
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <InfoTop />
       <Navbar />
       <RouteSwitch />
+      <Footer />
     </>
   );
 }
