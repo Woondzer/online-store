@@ -5,3 +5,10 @@
 * {
     font-family: "Open Sans", sans-serif;
 }
+
+.tab {
+    color: black !important;
+  }
+  .tab-active {
+    color: black !important;
+  }
