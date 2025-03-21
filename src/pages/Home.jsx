@@ -50,7 +50,7 @@ const Home = () => {
       </div>
 
       {/* box 2 tabs */}
-      <div className="card bg-white rounded-box grid h-auto place-items-center">
+      <div className="card bg-white rounded-none grid h-auto place-items-center">
         <h1 className="text-black font-bold mt-3">Populärt just nu!</h1>
         <div className="flex flex-col w-50 h-5">
           <div className="divider mt-1 divider-neutral"></div>
@@ -77,7 +77,7 @@ const Home = () => {
 
       {/* box 3 Information */}
       <div className="bg-[#303030] p-12 w-full">
-        <div className="grid grid-cols-2 gap-40 w-full">
+        <div className="grid grid-cols-2 gap-40 max-w-screen-2xl mx-auto ">
           {/* vänster */}
           <div className="ml-15 mt-15 gap-12 w-full">
             <div className="text-white">
