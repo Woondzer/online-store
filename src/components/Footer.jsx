@@ -25,7 +25,7 @@ function Footer() {
         </nav>
         <nav>
           <div className="flex flex-col items-center">
-            <p className="text-sm font-bold mb-2">SOCIALA MEDIER</p>
+            <h6 className="footer-title">SOCIALA MEDIER</h6>
             <div className="grid grid-cols-3 gap-4 text-2xl mt-2">
               <FaDiscord className="cursor-pointer hover:text-blue-500" />
               <FaTwitter className="cursor-pointer hover:text-sky-400" />
@@ -58,7 +58,7 @@ function Footer() {
                 placeholder="username@site.com"
                 className="bg-white text-gray-500 px-4 py-2 rounded-l-xl w-full focus:outline-none"
               />
-              <button className=" bg-orange-500 hover:bg-orange-600 text-white h-12 w-20 flex items-center justify-center rounded-r-xl cursor-pointer">
+              <button className=" bg-[#FF9900] hover:bg-orange-600 text-white h-12 w-20 flex items-center justify-center rounded-r-xl cursor-pointer">
                 <img src="/Email-Open.svg" alt="" />
               </button>
             </div>

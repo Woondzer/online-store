@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import SearchField from "../SearchField";
 import Cart from "../Cart";
+import User from "../User";
 
 function Navbar() {
   return (
@@ -17,13 +18,13 @@ function Navbar() {
         {/* Navigation Links */}
         <div className="flex items-center gap-x-26 mt-3">
           <NavLink
-            to="/products"
+            to="/games"
             className="text-white font-bold hover:text-orange-400"
           >
             <div className="px-4 py-4">SPEL</div>
           </NavLink>
           <NavLink
-            to="/games"
+            to="/products"
             className="text-white font-bold hover:text-orange-400"
           >
             <div className="px-4 py-4">VR - PRODUKTER</div>
@@ -33,6 +34,7 @@ function Navbar() {
       <div className="flex items-center space-x-10">
         <SearchField />
         <Cart />
+        <User />
       </div>
     </div>
   );

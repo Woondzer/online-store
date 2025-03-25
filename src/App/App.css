@@ -13,3 +13,12 @@
   .tab-active {
     color: black !important;
   }
+
+  .vr-banner {
+    background-image: url('/topBanner_extended_2560.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  
+  
+  
