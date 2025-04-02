@@ -20,6 +20,20 @@ const SpecProduct = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      const cachedProduct = sessionStorage.getItem(`product-${id}`);
+      const cachedIcons = sessionStorage.getItem("product-icons");
+      if (cachedProduct) {
+        const data = JSON.parse(cachedProduct);
+        setProduct(data.product);
+        setImageUrl(data.imageUrl);
+        setInfoBannerUrl(data.infoBannerUrl || "");
+
+        if (cachedIcons) {
+          setIcons(JSON.parse(cachedIcons));
+        }
+        return;
+      }
+
       let docRef = doc(db, "games", id);
       let docSnap = await getDoc(docRef);
 
@@ -32,11 +46,14 @@ const SpecProduct = () => {
         const data = docSnap.data();
         setProduct(data);
 
+        let imageURLTemp = "";
+        let infoBannerURLTemp = "";
+
         if (data.imageUrl) {
           try {
             const imgRef = ref(storage, `GAMES/${data.imageUrl}`);
-            const url = await getDownloadURL(imgRef);
-            setImageUrl(url);
+            imageURLTemp = await getDownloadURL(imgRef);
+            setImageUrl(imageURLTemp);
           } catch (error) {
             console.error("Kunde inte ladda produktbild:", error);
           }
@@ -45,30 +62,51 @@ const SpecProduct = () => {
         if (data.INFOimageUrl) {
           try {
             const infoRef = ref(storage, `BIG-INFO-GAMES/${data.INFOimageUrl}`);
-            const infoUrl = await getDownloadURL(infoRef);
-            setInfoBannerUrl(infoUrl);
+            infoBannerURLTemp = await getDownloadURL(infoRef);
+            setInfoBannerUrl(infoBannerURLTemp);
           } catch (error) {
             console.error("kunde inte ladda infobanner-bild:", error);
           }
         }
-      }
-    };
 
-    const fetchIcons = async () => {
-      try {
-        const klarna = await getDownloadURL(ref(storage, "PAYMENT/klarna.svg"));
-        const check = await getDownloadURL(ref(storage, "ICONS/CheckMark.svg"));
-        const cross = await getDownloadURL(
-          ref(storage, "ICONS/CrossMarkButton.svg")
+        sessionStorage.setItem(
+          `product-${id}`,
+          JSON.stringify({
+            product: data,
+            imageUrl: imageURLTemp,
+            infoBannerUrl: infoBannerURLTemp,
+          })
         );
+      }
 
-        setIcons({ klarna, check, cross });
-      } catch (error) {
-        console.error("Kunde inte ladda ikoner:", error);
+      if (!sessionStorage.getItem("product-icons")) {
+        try {
+          const klarna = await getDownloadURL(
+            ref(storage, "PAYMENT/klarna.svg")
+          );
+          const check = await getDownloadURL(
+            ref(storage, "ICONS/CheckMark.svg")
+          );
+          const cross = await getDownloadURL(
+            ref(storage, "ICONS/CrossMarkButton.svg")
+          );
+
+          const iconUrls = { klarna, check, cross };
+
+          setIcons(iconUrls);
+          sessionStorage.setItem("product-icons", JSON.stringify(iconUrls));
+        } catch (error) {
+          console.error("Kunde inte ladda ikoner:", error);
+        }
+      } else {
+        const iconsFromStorage = JSON.parse(
+          sessionStorage.getItem("product-icons")
+        );
+        console.log("Ikoner fårn sessionStorage:", iconsFromStorage);
+        setIcons(iconsFromStorage);
       }
     };
 
-    fetchIcons();
     fetchProduct();
   }, [id]);
 

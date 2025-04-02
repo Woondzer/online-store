@@ -11,6 +11,13 @@ const Games = () => {
   //hämtar alla bilder i doc gör om de till data array
   useEffect(() => {
     const fetchGamesWithImages = async () => {
+      const cachedGames = sessionStorage.getItem("gamesData");
+
+      if (cachedGames) {
+        setGames(JSON.parse(cachedGames));
+        return;
+      }
+
       const gamesCollection = collection(db, "games");
       const gamesSnapshot = await getDocs(gamesCollection);
 
@@ -36,6 +43,8 @@ const Games = () => {
           }
         })
       );
+
+      sessionStorage.setItem("gamesData", JSON.stringify(gamesWithUrls));
       setGames(gamesWithUrls);
     };
 
