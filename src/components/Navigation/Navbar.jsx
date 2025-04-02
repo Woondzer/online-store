@@ -1,12 +1,11 @@
 import { NavLink } from "react-router-dom";
-import SearchField from "../SearchField";
-import Cart from "../Cart";
+import SearchField from "./SearchField";
+import Cart from "./Cart";
 import User from "../User";
 
 function Navbar() {
   return (
     <div className="navbar flex justify-between items-center bg-[#303030] shadow-sm h-28 px-11 p-0">
-      {/* Left: Logo + Links (Grouped Together) */}
       <div className="flex items-center gap-x-26">
         <NavLink to="/" className="inline-flex align-bottom">
           <img
@@ -15,7 +14,7 @@ function Navbar() {
             className="h-17.5 w-auto"
           />
         </NavLink>
-        {/* Navigation Links */}
+        {/* Navigations länkar */}
         <div className="flex items-center gap-x-26 mt-3">
           <NavLink
             to="/games"
