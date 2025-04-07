@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebaseConfig";
-import GoToProductButton from "./GoToProductBTN";
+import { useImages } from "../contexts/CarouselContext";
+import { NavLink } from "react-router-dom";
+import { useProducts } from "../contexts/ProductsContext";
 
 const ProductCarousel = ({ folder }) => {
+  const { fetchFolderImages } = useImages();
+  const { isLoaded: productsLoaded } = useProducts();
+
   const [items, setItems] = useState([]);
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
@@ -24,28 +27,15 @@ const ProductCarousel = ({ folder }) => {
   };
 
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const folderRef = ref(storage, folder);
-        const result = await listAll(folderRef);
+    if (!productsLoaded) return;
 
-        const fetchedItems = await Promise.all(
-          result.items.map(async (itemRef) => {
-            const url = await getDownloadURL(itemRef);
-            return {
-              imageUrl: url,
-            };
-          })
-        );
-
-        setItems(fetchedItems);
-      } catch (error) {
-        console.error("Kunde inte hämta bilder från mapp:", folder, error);
-      }
+    const loadImages = async () => {
+      const images = await fetchFolderImages(folder);
+      setItems(images);
     };
 
-    fetchImages();
-  }, [folder]);
+    loadImages();
+  }, [folder, fetchFolderImages, productsLoaded]);
 
   useEffect(() => {
     if (items.length > 0) {
@@ -74,25 +64,34 @@ const ProductCarousel = ({ folder }) => {
 
   if (items.length === 0) return null;
 
+  //plocka ut vr2STARTPAGE.png för att kunna styla bilden sepparat.
   const currentItem = items[index];
+  const imageUrl = currentItem.imageUrl;
+  const decodedUrl = decodeURIComponent(imageUrl || "");
+  const imageName = decodedUrl.split("/").pop()?.split("?")[0];
+  const linkPath = currentItem.id ? `/product/${currentItem.id}` : "#";
 
   return (
-    <div className="relative w-full h-[450px] overflow-hidden mb-10 rounded-xl">
+    <div className="relative w-full h-[450px] overflow-hidden mb-10">
       <div className="relative w-full h-full">
-        <img
-          src={currentItem.imageUrl}
-          alt="Produktbild"
-          className={`w-full h-full object-cover transition-opacity duration-500 ${
-            fade ? "opacity-100" : "opacity-0"
-          }`}
-        />
-        <div className="absolute bottom-10 left-10">
-          <GoToProductButton
-            productId={currentItem.id}
-            label="Till Produkt"
-            className="w-80"
+        <NavLink to={linkPath}>
+          <img
+            src={currentItem.imageUrl}
+            alt="Produktbild"
+            className={`absolute top-0 left-0 w-full h-full transition-opacity duration-500 ${
+              fade ? "opacity-100" : "opacity-0"
+            } ${
+              imageName === "VR2-STARTPAGE.png"
+                ? "object-cover object-right"
+                : "object-cover object-center"
+            }`}
           />
-        </div>
+        </NavLink>
+        {imageName === "VR2-STARTPAGE.png" && (
+          <div className="hidden xl:block absolute left-30 top-1/2 -translate-y-1/2 text-black text-6xl font-bold  px-6 py-3 rounded-lg">
+            PlayStation VR2
+          </div>
+        )}
         <button
           onClick={handlePrev}
           className="absolute top-1/2 left-4 -translate-y-1/2 bg-white text-black hover:bg-orange-500 hover:text-white cursor-pointer rounded-full w-10 h-10 flex items-center justify-center shadow-md"

@@ -2,15 +2,17 @@ import { NavLink } from "react-router-dom";
 import SearchField from "./SearchField";
 import Cart from "./Cart";
 import User from "../User";
+import { useIcons } from "../../contexts/IconContext";
 
 function Navbar() {
+  const icons = useIcons();
   return (
     <div className="navbar flex justify-between items-center bg-[#303030] shadow-sm h-28 px-11 p-0">
       <div className="flex items-center gap-x-26">
         <NavLink to="/" className="inline-flex align-bottom">
           <img
-            src="/VR-Experience-logo-text.svg"
-            alt="Logo"
+            src={icons.VRlogoText}
+            alt="VR Experience Logo"
             className="h-17.5 w-auto"
           />
         </NavLink>

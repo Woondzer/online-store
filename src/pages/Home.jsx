@@ -1,53 +1,14 @@
+import { useIcons } from "../contexts/IconContext";
+import ProductCarousel from "../components/ProductCarousel";
+
 const Home = () => {
+  const icons = useIcons();
+
   return (
     <div className="flex w-full flex-col">
-      {/* karusell 1 topp */}
-      <div className="card bg-base-100 rounded-box grid h-auto place-items-center">
-        <div className="carousel w-full">
-          <div id="item1" className="carousel-item w-full">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp"
-              className="w-full"
-            />
-          </div>
-          <div id="item2" className="carousel-item w-full">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.webp"
-              className="w-full"
-            />
-          </div>
-          <div id="item3" className="carousel-item w-full">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1414694762283-acccc27bca85.webp"
-              className="w-full"
-            />
-          </div>
-          <div id="item4" className="carousel-item w-full">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.webp"
-              className="w-full"
-            />
-          </div>
-        </div>
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3">
-          <a
-            href="#item1"
-            className="w-3 h-3 rounded-full bg-white hover:bg-gray-300 transition peer-checked:bg-orange-400"
-          ></a>
-          <a
-            href="#item2"
-            className="w-3 h-3 rounded-full bg-white hover:bg-gray-300 transition peer-checked:bg-orange-400"
-          ></a>
-          <a
-            href="#item3"
-            className="w-3 h-3 rounded-full bg-white hover:bg-gray-300 transition peer-checked:bg-orange-400"
-          ></a>
-          <a
-            href="#item4"
-            className="w-3 h-3 rounded-full bg-white hover:bg-gray-300 transition peer-checked:bg-orange-400"
-          ></a>
-        </div>
-      </div>
+      {/* karusell */}
+
+      <ProductCarousel folder="STARTPAGE" className="" />
 
       {/* box 2 tabs */}
       <div className="card bg-white rounded-none grid h-auto place-items-center">
@@ -83,7 +44,7 @@ const Home = () => {
             <div className="text-white">
               {/* Gratis frakt */}
               <div className="flex items-start mb-20 gap-4">
-                <img src="/Truck.svg" alt="Truck" className="w-12 h-12" />
+                <img src={icons.truck} alt="Truck" className="w-12 h-12" />
                 <div>
                   <p className="text-lg font-bold">Fri Frakt över 500kr</p>
                   <p className="text-sm">
@@ -94,13 +55,13 @@ const Home = () => {
 
               {/* Nöjda kunder */}
               <div className="flex items-start mb-20 gap-4">
-                <img src="/Smiling.svg" alt="Smiley" className="w-12 h-12" />
+                <img src={icons.smiley} alt="Smiley" className="w-12 h-12" />
                 <div>
                   <p className="text-lg font-bold">Över 50.000 Nöjda kunder!</p>
                   <div className="flex items-center gap-2">
                     <p className="text-sm">4.9</p>
                     <img
-                      src="/homeSTARS.svg"
+                      src={icons.homeSTARS}
                       alt="4.9 STARS"
                       className="w-24"
                     />
@@ -111,7 +72,7 @@ const Home = () => {
               {/* recensioner */}
               <div className="flex items-start gap-4 max-w-lg">
                 <img
-                  src="/Comments.svg"
+                  src={icons.comments}
                   alt="Chat Bubble"
                   className="w-12 h-12"
                 />

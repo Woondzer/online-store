@@ -43,7 +43,7 @@ function Cart() {
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <span className="indicator-item text-white bg-[#FF0000] rounded-full px-2 py-1 text-xs font-bold">
+          <span className="indicator-item text-white bg-[#FF0000]  rounded-full px-2 py-1 text-xs font-bold">
             {cart.reduce((sum, item) => sum + item.quantity, 0)}
           </span>
         </div>
@@ -81,7 +81,7 @@ function Cart() {
                           )
                         }
                         disabled={item.quantity <= 1}
-                        className="btn btn-xs btn-outline"
+                        className="btn btn-xs btn-outline-none bg-red-600 hover:bg-red-900"
                       >
                         <LuMinus size={12} />
                       </button>
@@ -105,7 +105,7 @@ function Cart() {
                             item.quantity + 1
                           )
                         }
-                        className="btn btn-xs btn-outline"
+                        className="btn btn-xs btn-outline-none bg-green-600 hover:bg-green-900"
                       >
                         <LuPlus size={12} />
                       </button>
@@ -113,7 +113,7 @@ function Cart() {
                   </div>
                   <button
                     onClick={() => removeFromCart(item.id, item.imageUrl)}
-                    className="text-red-500 hover:text-red-700 ml-2"
+                    className=" text-red-500 hover:text-[#FF9900] ml-2 cursor-pointer"
                   >
                     <LuTrash2 size={18} />
                   </button>
@@ -121,7 +121,9 @@ function Cart() {
               ))}
             </ul>
 
-            <span className="text-info pt-2">totalt: {total} kr</span>
+            <span className="text-info pt-2 font-bold text-xl">
+              Totalt: {total} kr
+            </span>
             <div className="card-actions pt-2">
               <button className="btn btn-primary btn-block">View cart</button>
             </div>

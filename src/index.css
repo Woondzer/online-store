@@ -1,6 +1,10 @@
-.vr-banner {
-    background-image: url('/topBanner_extended_2560.jpg');
-    background-size: cover;
-    background-position: center;
+.img-crop-left {
+    object-fit: cover;
+    object-position: left center;
+    height: 100%;
+    width: auto;
+    min-width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
-  

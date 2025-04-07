@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { getDownloadURL, ref } from "firebase/storage";
+import { db, storage } from "../firebaseConfig";
 
 const GamesContext = createContext();
 
@@ -8,8 +9,8 @@ export const GamesProvider = ({ children }) => {
   const [games, setGames] = useState([]);
 
   useEffect(() => {
-    const fetchGames = async () => {
-      const cached = sessionStorage.getItem("all-games");
+    const fetchGamesWithImages = async () => {
+      const cached = sessionStorage.getItem("gamesData");
       if (cached) {
         setGames(JSON.parse(cached));
         return;
@@ -17,15 +18,30 @@ export const GamesProvider = ({ children }) => {
 
       const gamesCollection = collection(db, "games");
       const snapshot = await getDocs(gamesCollection);
-      const data = snapshot.docs.map((doc) => ({
+
+      const gamesList = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      setGames(data);
-      sessionStorage.setItem("all-games", JSON.stringify(data));
+      const gamesWithImages = await Promise.all(
+        gamesList.map(async (game) => {
+          try {
+            const imageRef = ref(storage, `GAMES/${game.imageUrl}`);
+            const url = await getDownloadURL(imageRef);
+            return { ...game, imageUrl: url };
+          } catch (error) {
+            console.error(`kunde inte ladda bild för ${game.title}:`, error);
+            return { ...game, imageUrl: "" };
+          }
+        })
+      );
+
+      sessionStorage.setItem("gamesData", JSON.stringify(gamesWithImages));
+      setGames(gamesWithImages);
     };
-    fetchGames();
+
+    fetchGamesWithImages();
   }, []);
 
   return (

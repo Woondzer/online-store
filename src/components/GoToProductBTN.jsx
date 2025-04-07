@@ -10,7 +10,7 @@ const GoToProductButton = ({ productId, label = "", className = "" }) => {
   return (
     <button
       onClick={handleClick}
-      className={`bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-md cursor-pointer ${className}`}
+      className={`bg-[#FF9900] text-black hover:bg-black hover:text-[#FF9900] font-bold px-6 py-3 rounded-md cursor-pointer ${className}`}
     >
       {label}
     </button>

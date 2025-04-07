@@ -6,21 +6,23 @@ import {
   FaYoutube,
   FaTiktok,
 } from "react-icons/fa";
+import { useIcons } from "../contexts/IconContext";
 
 function Footer() {
+  const icons = useIcons();
   return (
     <footer className="bg-base-200 text-base-content p-11">
       <div className="container mx-auto flex flex-wrap justify-between items-start gap-x-16 max-w-screen-2xl">
         <nav>
-          <img src="VR-Experience-Logo.svg" alt="" />
+          <img src={icons.VRlogo} alt="VR Experience logo" />
         </nav>
         <nav>
           <h6 className="footer-title">BETALMETODER</h6>
           <div className="grid grid-cols-2 gap-4">
-            <img src="/klarna.svg" alt="Klarna" className="w-12" />
-            <img src="/swish_white.svg" alt="Swish" className="w-12" />
-            <img src="/paypal_white.svg" alt="" className="w-12" />
-            <img src="visa.png" alt="" className="w-12" />
+            <img src={icons.klarna} alt="Klarna" className="w-12" />
+            <img src={icons.swish} alt="Swish" className="w-12" />
+            <img src={icons.paypal} alt="" className="w-12" />
+            <img src={icons.visa} alt="" className="w-12" />
           </div>
         </nav>
         <nav>
@@ -59,7 +61,7 @@ function Footer() {
                 className="bg-white text-gray-500 px-4 py-2 rounded-l-xl w-full focus:outline-none"
               />
               <button className=" bg-[#FF9900] hover:bg-orange-600 text-white h-12 w-20 flex items-center justify-center rounded-r-xl cursor-pointer">
-                <img src="/Email-Open.svg" alt="" />
+                <img src={icons.newsLetter} alt="Newsletter" />
               </button>
             </div>
           </fieldset>

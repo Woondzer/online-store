@@ -5,6 +5,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig";
 import { useCart } from "../contexts/CartContext";
 import StarRating from "../components/StarRating";
+import { useIcons } from "../contexts/IconContext";
 
 const SpecProduct = () => {
   const { id } = useParams(); //få id från URL
@@ -12,25 +13,26 @@ const SpecProduct = () => {
   const [product, setProduct] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [infoBannerUrl, setInfoBannerUrl] = useState("");
-  const [icons, setIcons] = useState({
-    klarna: "",
-    check: "",
-    cross: "",
-  });
+  const [loadingGifUrl, setLoadingGifUrl] = useState("");
+  const icons = useIcons();
 
   useEffect(() => {
     const fetchProduct = async () => {
       const cachedProduct = sessionStorage.getItem(`product-${id}`);
-      const cachedIcons = sessionStorage.getItem("product-icons");
+
+      try {
+        const gifRef = ref(storage, "LOADING/LoadingIMG.gif");
+        const gifUrl = await getDownloadURL(gifRef);
+        setLoadingGifUrl(gifUrl);
+      } catch (error) {
+        console.error("kunde inte ladda loading GIF:", error);
+      }
+
       if (cachedProduct) {
         const data = JSON.parse(cachedProduct);
         setProduct(data.product);
         setImageUrl(data.imageUrl);
         setInfoBannerUrl(data.infoBannerUrl || "");
-
-        if (cachedIcons) {
-          setIcons(JSON.parse(cachedIcons));
-        }
         return;
       }
 
@@ -56,6 +58,17 @@ const SpecProduct = () => {
             setImageUrl(imageURLTemp);
           } catch (error) {
             console.error("Kunde inte ladda produktbild:", error);
+
+            try {
+              const imgRef = ref(storage, `PRODUCTS/${data.imageUrl}`);
+              imageURLTemp = await getDownloadURL(imgRef);
+              setImageUrl(imageURLTemp);
+            } catch (error) {
+              console.error(
+                "kunde inte ladda bild från GAMES elelr PRODUCTS:",
+                error
+              );
+            }
           }
         }
 
@@ -78,40 +91,26 @@ const SpecProduct = () => {
           })
         );
       }
-
-      if (!sessionStorage.getItem("product-icons")) {
-        try {
-          const klarna = await getDownloadURL(
-            ref(storage, "PAYMENT/klarna.svg")
-          );
-          const check = await getDownloadURL(
-            ref(storage, "ICONS/CheckMark.svg")
-          );
-          const cross = await getDownloadURL(
-            ref(storage, "ICONS/CrossMarkButton.svg")
-          );
-
-          const iconUrls = { klarna, check, cross };
-
-          setIcons(iconUrls);
-          sessionStorage.setItem("product-icons", JSON.stringify(iconUrls));
-        } catch (error) {
-          console.error("Kunde inte ladda ikoner:", error);
-        }
-      } else {
-        const iconsFromStorage = JSON.parse(
-          sessionStorage.getItem("product-icons")
-        );
-        console.log("Ikoner fårn sessionStorage:", iconsFromStorage);
-        setIcons(iconsFromStorage);
-      }
     };
 
     fetchProduct();
   }, [id]);
 
+  //loading GIF
   if (!product)
-    return <div className="text-white p-10"> Laddar produkt...</div>; //byt ut mot LOADING ikon eller något annat.
+    return (
+      <div className="flex justify-center items-center h-[500px]">
+        {loadingGifUrl ? (
+          <img
+            src={loadingGifUrl}
+            alt="Laddar produkt..."
+            className="w-100 h-100"
+          />
+        ) : (
+          <p className="text-white text-lg">Laddar produkt...</p>
+        )}
+      </div>
+    );
 
   return (
     <>
@@ -126,11 +125,13 @@ const SpecProduct = () => {
           <section className="text-black flex flex-col gap-4 max-w-100 justify-self-end">
             <h1 className="text-3xl font-bold">{product.title}</h1>
 
-            <h2 className="text-2xl font-bold">{product.price} kr</h2>
+            <h2 className="text-2xl font-bold text-orange-600 whitespace-nowrap">
+              {product.price.toLocaleString("sv-SE")} kr
+            </h2>
 
             <button
               onClick={() => addToCart({ ...product, imageUrl })}
-              className="btn w-full bg-[#FF9900] hover:bg-orange-600 border-none shadow-none text-black font-bold text-lg rounded-lg"
+              className="btn w-full bg-[#FF9900] border-none shadow-none text-black  hover:bg-black hover:text-[#FF9900] font-bold text-lg rounded-lg"
             >
               Lägg till i varukorg
             </button>
@@ -147,7 +148,7 @@ const SpecProduct = () => {
             )}
 
             <div className="mt-4">
-              <h2 className="font-bold text-lg">Fri frakt</h2>&nbps;
+              <h2 className="font-bold text-lg">Fri frakt</h2>&nbsp;
               {/* lägg till funktionalitet för att automatiskt känna av om fri frakt eller ej */}
               <p className="text-sm">
                 Vid köp innan kl 11:00 skickas varan samma dag.
