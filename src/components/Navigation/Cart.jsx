@@ -1,8 +1,11 @@
 import { useCart } from "../../contexts/CartContext";
 import { LuTrash2, LuMinus, LuPlus } from "react-icons/lu";
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import LoginForm from "../LoginForm";
 
 function Cart() {
+  const { user, login } = useAuth();
   const { cart, updateQuantity, removeFromCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -124,9 +127,25 @@ function Cart() {
             <span className="text-info pt-2 font-bold text-xl">
               Totalt: {total} kr
             </span>
-            <div className="card-actions pt-2">
-              <button className="btn btn-primary btn-block">View cart</button>
-            </div>
+
+            {user ? (
+              <button className="btn btn-primary w-full mt-4">
+                Till kassan
+              </button>
+            ) : (
+              <div className="mt-4">
+                <p className="mb-2 font-semibold text-center">
+                  Logga in för att gå vidare till kassan
+                </p>
+                <LoginForm
+                  onLogin={(email, password) => login(email, password)}
+                />
+              </div>
+            )}
+
+            {/* <div className="card-actions pt-2">
+              <button className="btn btn-primary btn-block">Till kassan</button>
+            </div> */}
           </div>
         </div>
       )}
