@@ -4,6 +4,7 @@ import Games from "../pages/Games";
 import Products from "../pages/Products";
 import SpecProduct from "../pages/SpecProduct";
 import Register from "../pages/Register";
+import Checkout from "../pages/Checkout";
 import NotFound from "../pages/NotFound";
 
 const RouteSwitch = () => {
@@ -14,6 +15,7 @@ const RouteSwitch = () => {
       <Route path="/product/:id" element={<SpecProduct />} />
       <Route path="games" element={<Games />} />
       <Route path="register" element={<Register />} />
+      <Route path="/checkout" element={<Checkout />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

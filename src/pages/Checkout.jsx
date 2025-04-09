@@ -1,0 +1,252 @@
+import { useState, useEffect } from "react";
+import { useCart } from "../contexts/CartContext";
+
+const Checkout = () => {
+  const { cartItems } = useCart();
+  const items = cartItems || [];
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const [deliveryMethod, setDeliveryMethod] = useState("");
+  const [shippingMethod, setShippingMethod] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+
+  const FREE_SHIPPING_LIMIT = 500;
+  const SHIPPING_COST = 149;
+
+  const cartTotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const isPickup = deliveryMethod === "pickup";
+  const shippingFee = isPickup
+    ? 0
+    : cartTotal >= FREE_SHIPPING_LIMIT
+    ? 0
+    : SHIPPING_COST;
+
+  const totalCost = cartTotal + shippingFee;
+
+  useEffect(() => {
+    if (deliveryMethod === "pickup") {
+      setCurrentStep(3);
+      setShippingMethod("");
+    } else if (deliveryMethod === "shipping") {
+      setCurrentStep(2);
+    }
+  }, [deliveryMethod]);
+
+  const handleContinue = () => {
+    setCurrentStep((prev) => prev + 1);
+  };
+
+  const isStepComplete = (step) => {
+    if (step === 1) return deliveryMethod !== "";
+    if (step === 2 && deliveryMethod === "shipping")
+      return shippingMethod !== "";
+    if (step === 3) return paymentMethod !== "";
+    return false;
+  };
+
+  return (
+    <div className="flex flex-col lg:flex-row gap-8 px-8 py-10 text-gray-600">
+      {/* vänster: Steg för beställning */}
+      <div className="w-full lg:w-2/3 space-y-6">
+        {/* Steg 1: leverans Metod */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-600 flex justify-between">
+            Välj Leveranssätt <span className="text-gray-500">Steg 1/4</span>
+          </h3>
+          <div className="mt-4 space-y-3">
+            <label
+              className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
+                deliveryMethod === "pickup"
+                  ? "border-gray-500 bg-gray-50"
+                  : "border-gray-300"
+              }`}
+            >
+              <input
+                type="radio"
+                name="delivery"
+                value="pickup"
+                checked={deliveryMethod === "pickup"}
+                onChange={() => setDeliveryMethod("pickup")}
+              />
+              Hämta i butik
+            </label>
+
+            <label
+              className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
+                deliveryMethod === "shipping"
+                  ? "border-gray-500 bg-gray-50"
+                  : "border-gray-300"
+              }`}
+            >
+              <input
+                type="radio"
+                name="delivery"
+                value="shipping"
+                checked={deliveryMethod === "shipping"}
+                onChange={() => setDeliveryMethod("shipping")}
+              />
+              Skicka till mig
+            </label>
+          </div>
+
+          {isStepComplete(1) && currentStep === 1 && (
+            <button onClick={handleContinue} className="btn btn-primary mt-6">
+              Fortsätt
+            </button>
+          )}
+        </div>
+
+        {/* Steg 2: frakt Metod */}
+        {deliveryMethod === "shipping" && (
+          <div
+            className={`bg-white rounded-lg shadow p-6 ${
+              currentStep >= 2 ? "" : "opacity-50 pointer-events-none"
+            }`}
+          >
+            <h3 className="text-lg font-semibold flex justify-between">
+              Välj Fraktsätt <span className="text-gray-500">Steg 2/4</span>
+            </h3>
+            <div className="mt-4 space-y-3">
+              {["Schenker", "PostNord"].map((method) => (
+                <label
+                  key={method}
+                  className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
+                    shippingMethod === method
+                      ? "border-gray-500 bg-gray-50"
+                      : "border-gray-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="shipping"
+                    value={method}
+                    checked={shippingMethod === method}
+                    onChange={() => setShippingMethod(method)}
+                  />
+                  {method}
+                </label>
+              ))}
+            </div>
+
+            {isStepComplete(2) && (
+              <button onClick={handleContinue} className="btn btn-primary mt-6">
+                Fortsätt
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Steg 4: Betalnings Metod */}
+        <div
+          className={`bg-white rounded-lg shadow p-6 text-gray-600 ${
+            currentStep >= 3 ? "" : "opacity-50 pointer-events-none"
+          }`}
+        >
+          <h3 className="text-lg font-semibold flex justify-between">
+            Välj Betalsätt <span className="text-gray-500">Steg 3/4</span>
+          </h3>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {["Kort", "Kivra", "PayPal", "Swish"].map((method) => (
+              <label
+                key={method}
+                className={`flex items-center gap-3 p-4 border rounded-lg cursor-pointer transition-all ${
+                  paymentMethod === method
+                    ? "border-gray-500 bg-gray-50"
+                    : "border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  value={method}
+                  checked={paymentMethod === method}
+                  onChange={() => setPaymentMethod(method)}
+                />
+                {method}
+              </label>
+            ))}
+          </div>
+
+          {isStepComplete(3) && (
+            <button onClick={handleContinue} className="btn btn-primary mt-6">
+              Fortsätt
+            </button>
+          )}
+        </div>
+
+        {/* Steg 4: Kund Info */}
+        <div
+          className={`bg-white rounded-lg shadow p-6 ${
+            currentStep >= 4 ? "" : "opacity-50 pointer-events-none"
+          }`}
+        >
+          <h3 className="text-lg font-semibold flex justify-between">
+            Kundinformation <span className="text-gray-500">Steg 4/4</span>
+          </h3>
+          <p className="mt-3 text-gray-600 text-sm">
+            Kontrollera att dina uppgifter stämmer innan du lägger
+            beställningen.
+          </p>
+          <div className="mt-4 space-y-2">
+            <div className="text-sm text-gray-700">
+              Exempel: Anna Andersson, anna@email.se
+            </div>
+            <div className="text-sm text-gray-700">
+              Adress: Vägen 123, 12345 Stad
+            </div>
+            <div className="text-sm text-gray-700">Telefon: 070-123 45 67</div>
+          </div>
+
+          <button className="btn btn-success mt-6 w-full">
+            Lägg beställning
+          </button>
+        </div>
+      </div>
+
+      {/* höger summering av kundvagn */}
+      <div className="w-full lg:w-1/3 bg-white rounded-lg shadow p-6 h-fit">
+        <h3 className="text-lg font-semibold mb-4">Sammanfattning</h3>
+        <ul className="divide-y">
+          {items ||
+            [].map((item, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-between py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-12 h-12 object-cover rounded"
+                  />
+                  <div>
+                    <p className="font-semibold">{item.title}</p>
+                    <p className="text-sm text-gray-500">{item.quantity} st</p>
+                  </div>
+                </div>
+                <div className="font-medium">
+                  {(item.price * item.quantity).toLocaleString("sv-SE")} kr
+                </div>
+              </li>
+            ))}
+        </ul>
+
+        <div className="border-t pt-4 mt-4 space-y-1 text-sm text-gray-600">
+          <div className="flex justify-between">
+            <span>Frakt</span>
+            <span>{shippingFee === 0 ? "gratis" : `${shippingFee} kr`}</span>
+          </div>
+          <div className="flex justify-between font-bold text-black text-base">
+            <span>Total</span>
+            <span>{totalCost.toLocaleString("sv-SE")} kr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+export default Checkout;

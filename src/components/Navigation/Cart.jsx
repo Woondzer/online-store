@@ -3,12 +3,14 @@ import { LuTrash2, LuMinus, LuPlus } from "react-icons/lu";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import LoginForm from "../LoginForm";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const { user, login } = useAuth();
   const { cart, updateQuantity, removeFromCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -129,7 +131,11 @@ function Cart() {
             </span>
 
             {user ? (
-              <button className="btn btn-primary w-full mt-4">
+              <button
+                className="btn btn-primary w-full mt-4"
+                disabled={cart.length === 0}
+                onClick={() => navigate("/checkout")}
+              >
                 Till kassan
               </button>
             ) : (
