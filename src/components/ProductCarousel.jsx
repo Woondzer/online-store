@@ -72,7 +72,7 @@ const ProductCarousel = ({ folder }) => {
   const linkPath = currentItem.id ? `/product/${currentItem.id}` : "#";
 
   return (
-    <div className="relative w-full h-[450px] overflow-hidden mb-10">
+    <div className="relative w-full h-[450px] overflow-hidden">
       <div className="relative w-full h-full">
         <NavLink to={linkPath}>
           <img

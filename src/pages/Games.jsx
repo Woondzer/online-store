@@ -9,7 +9,7 @@ const Games = () => {
     <div className="bg-[#f5f5f5] w-full">
       <ProductCarousel folder="BIG-GAMES" className="" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6 px-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6 px-8 mt-10">
         {games.map((game, index) => (
           <GameCard
             key={index}

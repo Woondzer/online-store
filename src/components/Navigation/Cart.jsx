@@ -75,7 +75,9 @@ function Cart() {
                   />
                   <div className="flex flex-col flex-1">
                     <p className="font-semibold text-sm">{item.title}</p>
-                    <p className="text-xs text-gray-500">{item.price} kr/st</p>
+                    <p className="text-xs text-gray-500">
+                      {item.price.toLocaleString("sv-SE")} kr/st
+                    </p>
                     <div className="flex items-center gap-1 mt-2">
                       <button
                         onClick={() =>
@@ -127,7 +129,7 @@ function Cart() {
             </ul>
 
             <span className="text-info pt-2 font-bold text-xl">
-              Totalt: {total} kr
+              Totalt: {total.toLocaleString("sv-SE")} kr
             </span>
 
             {user ? (
