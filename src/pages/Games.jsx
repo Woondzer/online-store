@@ -14,6 +14,7 @@ const Games = () => {
           <GameCard
             key={index}
             id={game.id}
+            localid={game.localid}
             title={game.title}
             imageUrl={game.imageUrl}
             subtitle={game.subtitle}

@@ -2,14 +2,22 @@ import { useState, useEffect } from "react";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useIcons } from "../contexts/IconContext";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const { user } = useAuth();
-  const { cart } = useCart();
+  const { cart, clearCart } = useCart();
   const items = cart || [];
   const icons = useIcons();
+  const navigate = useNavigate();
   const paymentOptions = [
     { name: "Kort", icon: icons.visa },
     { name: "PayPal", icon: icons.paypal },
@@ -72,6 +80,49 @@ const Checkout = () => {
       return shippingMethod !== "";
     if (step === 3) return paymentMethod !== "";
     return false;
+  };
+
+  const handlePlaceOrder = async () => {
+    if (!user || !userData) return;
+
+    try {
+      const order = {
+        userId: user.uid,
+        customer: {
+          name: `${userData.firstName} ${userData.lastName}`,
+          email: userData.email,
+          address: userData.address,
+          postalCode: userData.postalCode,
+          phone: userData.phone,
+        },
+        items: items.map((item) => ({
+          title: item.title,
+          quantity: item.quantity,
+          price: item.price,
+          imageUrl: item.imageUrl || "",
+          id: item.localid || item.id,
+        })),
+        total: totalCost,
+        shippingFee,
+        deliveryMethod,
+        shippingMethod: shippingMethod || "ej valt",
+        paymentMethod,
+        status: "Pågående",
+        createdAt: serverTimestamp(),
+      };
+
+      console.log("🧾 Order-data som skickas till Firestore:", order);
+      order.items.forEach((item, index) => {
+        console.log(`🛒 Produkt ${index + 1}:`, item);
+      });
+
+      const docRef = await addDoc(collection(db, "orders"), order);
+      clearCart();
+      navigate(`/order-placed?orderId=${docRef.id}`);
+    } catch (err) {
+      console.error("Kunde inte lägga beställning:", err);
+      alert("Något gick fel. Försök igen.");
+    }
   };
 
   return (
@@ -247,7 +298,10 @@ const Checkout = () => {
                 </div>
               </>
             )}
-            <button className="btn btn-success mt-6 w-full">
+            <button
+              onClick={handlePlaceOrder}
+              className="btn btn-success mt-6 w-full"
+            >
               Lägg beställning
             </button>
           </div>

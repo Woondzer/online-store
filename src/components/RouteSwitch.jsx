@@ -6,6 +6,8 @@ import SpecProduct from "../pages/SpecProduct";
 import Register from "../pages/Register";
 import Checkout from "../pages/Checkout";
 import NotFound from "../pages/NotFound";
+import OrderPlaced from "../pages/OrderPlaced";
+import MyOrders from "../pages/userOrders.jsx";
 
 const RouteSwitch = () => {
   return (
@@ -16,6 +18,8 @@ const RouteSwitch = () => {
       <Route path="games" element={<Games />} />
       <Route path="register" element={<Register />} />
       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/order-placed" element={<OrderPlaced />} />
+      <Route path="/my-orders" element={<MyOrders />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

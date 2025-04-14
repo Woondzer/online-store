@@ -1,8 +1,10 @@
 import { useCart } from "../contexts/CartContext";
 import GoToProductButton from "./GoToProductBTN";
+import { useIcons } from "../contexts/IconContext";
 
-function GameCard({ id, title, imageUrl, price, subtitle }) {
+function GameCard({ id, localid, title, imageUrl, price, subtitle }) {
   const { addToCart } = useCart();
+  const icons = useIcons();
 
   return (
     <div className="card w-50 relative group">
@@ -12,10 +14,14 @@ function GameCard({ id, title, imageUrl, price, subtitle }) {
           <GoToProductButton productId={id} label="info" className="p-0" />
 
           <button
-            onClick={() => addToCart({ title, imageUrl, price })}
-            className="btn btn-sm btn-primary"
+            onClick={() => addToCart({ title, imageUrl, price, localid })}
+            className="btn btn-sm btn-success p-6 hover:bg-green-100"
           >
-            Add to Cart
+            <img
+              src={icons.addCart}
+              alt="Lägg i kundvagn"
+              className="h-10 w-auto"
+            />
           </button>
         </div>
       </figure>

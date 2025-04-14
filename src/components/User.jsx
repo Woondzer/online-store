@@ -75,13 +75,10 @@ function User() {
           </span>
         </li>
         <li>
-          <a className="justify-between">
-            Profile
-            <span className="badge">New</span>
-          </a>
+          <a className="justify-between">Profil</a>
         </li>
         <li>
-          <a>Settings</a>
+          <a onClick={() => navigate("/my-orders")}>Mina ordrar</a>
         </li>
         <li>
           <button onClick={handleLogout} className="text-red-600">

@@ -32,6 +32,8 @@ export const CartProvider = ({ children }) => {
 
   const { user } = useAuth();
 
+  const clearCart = () => setCart([]);
+
   // ladda in användarens sparade kundvagn
   useEffect(() => {
     const loadCartFromFirestore = async () => {
@@ -91,7 +93,7 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, updateQuantity, removeFromCart }}
+      value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart }}
     >
       {children}
     </CartContext.Provider>

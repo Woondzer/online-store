@@ -23,16 +23,17 @@ export const GamesProvider = ({ children }) => {
         id: doc.id,
         ...doc.data(),
       }));
+      console.log("📦 Inlästa games:", gamesList);
 
       const gamesWithImages = await Promise.all(
         gamesList.map(async (game) => {
           try {
             const imageRef = ref(storage, `GAMES/${game.imageUrl}`);
             const url = await getDownloadURL(imageRef);
-            return { ...game, imageUrl: url };
+            return { ...game, imageUrl: url, localid: game.localid };
           } catch (error) {
             console.error(`kunde inte ladda bild för ${game.title}:`, error);
-            return { ...game, imageUrl: "" };
+            return { ...game, imageUrl: "", localid: game.localid };
           }
         })
       );
