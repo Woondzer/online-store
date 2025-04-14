@@ -13,6 +13,7 @@ const Register = () => {
     firstName: "",
     lastName: "",
     address: "",
+    city: "",
     postalCode: "",
     phone: "",
     username: "",
@@ -42,6 +43,7 @@ const Register = () => {
         firstName: formData.firstName,
         lastName: formData.lastName,
         address: formData.address,
+        city: formData.city,
         postalCode: formData.postalCode,
         phone: formData.phone,
         username: formData.username,
@@ -138,6 +140,14 @@ const Register = () => {
             required
           />
           <input
+            name="city"
+            placeholder="Ort"
+            value={formData.city}
+            onChange={handleChange}
+            className="input inputbordered w-full"
+            required
+          />
+          <input
             name="postalCode"
             placeholder="Postnummer"
             value={formData.postalCode}
@@ -155,8 +165,11 @@ const Register = () => {
           />
           {error && <p className="text-red-600 text-sm">{error}</p>}
 
-          <button type="submit" className="btn btn-primary w-full">
-            Registrera
+          <button
+            type="submit"
+            className="btn btn-success w-full text-white font-bold"
+          >
+            Skapa konto
           </button>
         </form>
       )}

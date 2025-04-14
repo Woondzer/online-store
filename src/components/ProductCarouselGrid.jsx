@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 import { useIcons } from "../contexts/IconContext";
-import GoToProductButton from "./GoToProductBTN";
 import { NavLink } from "react-router-dom";
 
 const ProductCarouselGrid = ({ title, items }) => {
@@ -103,11 +102,6 @@ const ProductCarouselGrid = ({ title, items }) => {
                       <StarRating rating={item.rating} />
 
                       <span className="text-gray-600">({item.reviews})</span>
-                      {/* <GoToProductButton
-                      productId={item.id}
-                      label="Till produkt"
-                      className="p-0"
-                    /> */}
                     </div>
                   </div>
                   <p className="text-2xl font-bold text-orange-600 whitespace-nowrap">
