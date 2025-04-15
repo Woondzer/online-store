@@ -97,10 +97,11 @@ const Checkout = () => {
         },
         items: items.map((item) => ({
           title: item.title,
+          subtitle: item.subtitle || "",
           quantity: item.quantity,
           price: item.price,
           imageUrl: item.imageUrl || "",
-          id: item.localid || item.id,
+          id: item.id || item.localid,
         })),
         total: totalCost,
         shippingFee,

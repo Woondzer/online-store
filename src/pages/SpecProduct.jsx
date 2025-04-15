@@ -1,11 +1,20 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  query,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebaseConfig";
 import { useCart } from "../contexts/CartContext";
 import StarRating from "../components/StarRating";
 import { useIcons } from "../contexts/IconContext";
+import { useNavigate } from "react-router-dom";
 
 const SpecProduct = () => {
   const { id } = useParams(); //få id från URL
@@ -14,7 +23,9 @@ const SpecProduct = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [infoBannerUrl, setInfoBannerUrl] = useState("");
   const [loadingGifUrl, setLoadingGifUrl] = useState("");
+  const [recentlyBought, setRecentlyBought] = useState([]);
   const icons = useIcons();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -46,29 +57,35 @@ const SpecProduct = () => {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
-        setProduct(data);
+        const productWithId = { ...data, id: docSnap.id };
+        setProduct(productWithId);
 
         let imageURLTemp = "";
         let infoBannerURLTemp = "";
 
         if (data.imageUrl) {
+          let imageLoaded = false;
+
           try {
             const imgRef = ref(storage, `GAMES/${data.imageUrl}`);
             imageURLTemp = await getDownloadURL(imgRef);
-            setImageUrl(imageURLTemp);
+            imageLoaded = true;
           } catch (error) {
-            console.error("Kunde inte ladda produktbild:", error);
-
+            console.warn("GAMES/ kunde inte ladda, försöker PRODUCTS/", error);
             try {
               const imgRef = ref(storage, `PRODUCTS/${data.imageUrl}`);
               imageURLTemp = await getDownloadURL(imgRef);
-              setImageUrl(imageURLTemp);
+              imageLoaded = true;
             } catch (error) {
               console.error(
-                "kunde inte ladda bild från GAMES elelr PRODUCTS:",
+                "Misslyckades med att ladda från både GAMES och PRODUCTS",
                 error
               );
             }
+          }
+
+          if (imageLoaded) {
+            setImageUrl(imageURLTemp);
           }
         }
 
@@ -85,7 +102,7 @@ const SpecProduct = () => {
         sessionStorage.setItem(
           `product-${id}`,
           JSON.stringify({
-            product: data,
+            product: productWithId,
             imageUrl: imageURLTemp,
             infoBannerUrl: infoBannerURLTemp,
           })
@@ -95,6 +112,48 @@ const SpecProduct = () => {
 
     fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    const fetchRecentlyBought = async () => {
+      try {
+        const q = query(
+          collection(db, "orders"),
+          orderBy("createdAt", "desc"),
+          limit(10)
+        );
+        const snapshot = await getDocs(q);
+
+        const allItems = [];
+
+        snapshot.docs.forEach((doc) => {
+          const orderData = doc.data();
+          if (orderData.items) {
+            orderData.items.forEach((item) => {
+              allItems.push(item);
+            });
+          }
+        });
+
+        const unique = [];
+        const seen = new Set();
+
+        for (let item of allItems) {
+          const key = item.localid || item.id;
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(item);
+          }
+          if (unique.length === 3) break;
+        }
+
+        setRecentlyBought(unique);
+      } catch (error) {
+        console.error("Kunde inte hämta nyligen köpta produkter:", error);
+      }
+    };
+
+    fetchRecentlyBought();
+  }, []);
 
   //loading GIF
   if (!product)
@@ -115,11 +174,11 @@ const SpecProduct = () => {
   return (
     <>
       <div className="bg-white p-12 w-full">
-        <div className="grid grid-cols-2 gap-40 w-full mx-auto">
+        <div className="grid grid-cols-[1fr_auto] gap-10 w-full mx-auto">
           <img
             src={imageUrl}
             alt={product.title}
-            className="justify-self-end w-70 h-auto mt-10"
+            className="justify-self-center w-auto h-70 mt-10"
           />
 
           <section className="text-black flex flex-col gap-4 max-w-100 justify-self-end">
@@ -240,22 +299,38 @@ const SpecProduct = () => {
             )}
           </div>
 
-          {/* Right Column - Andra har köpt */}
-          <div className="bg-white rounded-lg p-15 shadow space-y-6 h-fit text-black">
-            <h3 className="text-lg font-semibold">Andra har köpt</h3>
+          {/* Andra har köpt */}
+          {recentlyBought.length > 0 && (
+            <div className="bg-white rounded-lg p-6 shadow space-y-6 h-fit text-black flex flex-col items-center text-center mx-auto">
+              <h3 className="text-lg font-semibold">Andra har köpt</h3>
+              <div className="flex flex-col gap-6">
+                {recentlyBought.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => navigate(`/product/${item.id}`)}
+                    className="bg-white rounded shadow p-4 hover:shadow-md transition flex flex-col items-center text-center w-full max-w-[250px] hover:cursor-pointer"
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="h-25 w-auto object-cover rounded mb-3"
+                    />
+                    <StarRating rating={product.rating} />
+                    <h2 className="text-md font-semibold text-gray-700">
+                      {item.title}
+                    </h2>
+                    <h3 className="text-sm font-light text-gray-600">
+                      {item.subtitle}
+                    </h3>
 
-            {[1, 2, 3].map((_, i) => (
-              <div
-                key={i}
-                className="border-b border-b-gray-300 pb-4 last:border-b-0 last:pb-0 text-black"
-              >
-                <div className="w-24 h-24 bg-gray-200 rounded mb-2"></div>
-                <p className="text-sm font-semibold">Spel Titel {i + 1}</p>
-                <p className="text-sm text-yellow-500">★★★★★</p>
-                <p className="text-sm font-bold mt-1">599 kr</p>
+                    <p className="font-semibold text-xl text-orange-600">
+                      {item.price.toLocaleString("sv-SE")} kr
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </>

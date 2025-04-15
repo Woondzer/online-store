@@ -14,7 +14,7 @@ function GameCard({ id, localid, title, imageUrl, price, subtitle }) {
           <GoToProductButton productId={id} label="info" className="p-0" />
 
           <button
-            onClick={() => addToCart({ title, imageUrl, price, localid })}
+            onClick={() => addToCart({ id, title, imageUrl, price, localid })} //ta eventuellt bort id igen.
             className="btn btn-sm btn-success p-6 hover:bg-green-100"
           >
             <img
