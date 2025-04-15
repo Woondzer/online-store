@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { useIcons } from "../contexts/IconContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const { user } = useAuth();
@@ -122,7 +123,7 @@ const Checkout = () => {
       navigate(`/order-placed?orderId=${docRef.id}`);
     } catch (err) {
       console.error("Kunde inte lägga beställning:", err);
-      alert("Något gick fel. Försök igen.");
+      toast.error("Något gick fel. Försök igen.");
     }
   };
 

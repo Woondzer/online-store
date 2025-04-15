@@ -15,6 +15,8 @@ import { useCart } from "../contexts/CartContext";
 import StarRating from "../components/StarRating";
 import { useIcons } from "../contexts/IconContext";
 import { useNavigate } from "react-router-dom";
+import ReviewForm from "../components/Reviews/ReviewForm";
+import ReviewList from "../components/Reviews/ReviewList";
 
 const SpecProduct = () => {
   const { id } = useParams(); //få id från URL
@@ -24,6 +26,7 @@ const SpecProduct = () => {
   const [infoBannerUrl, setInfoBannerUrl] = useState("");
   const [loadingGifUrl, setLoadingGifUrl] = useState("");
   const [recentlyBought, setRecentlyBought] = useState([]);
+
   const icons = useIcons();
   const navigate = useNavigate();
 
@@ -240,10 +243,12 @@ const SpecProduct = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-screen-xl mx-auto px-4">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
+            <ReviewForm productId={id} />
             {/* Top recension*/}
-            <div className="bg-white p-6 rounded-lg shadow text-black">
+
+            {/* <div className="bg-white p-6 rounded-lg shadow text-black">
               Topprecension
-            </div>
+            </div> */}
 
             {/* Banner */}
             {infoBannerUrl && (
@@ -257,7 +262,10 @@ const SpecProduct = () => {
             )}
 
             {/* More Reviews */}
-            <div className="space-y-4">
+
+            <ReviewList productId={id} />
+
+            {/* <div className="space-y-4">
               {[1, 2, 3].map((_, i) => (
                 <div
                   key={i}
@@ -266,7 +274,7 @@ const SpecProduct = () => {
                   Review {i + 1}
                 </div>
               ))}
-            </div>
+            </div> */}
 
             {/* Product Info */}
             {product.features && product.features.length > 0 && (

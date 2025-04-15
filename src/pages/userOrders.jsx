@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const UserOrders = () => {
   const { user } = useAuth();
@@ -47,7 +48,7 @@ const UserOrders = () => {
       );
     } catch (error) {
       console.error("Kunde inte avbryta order:", error);
-      alert("Något gick fel. Försök igen.");
+      toast.error("Något gick fel. Försök igen.");
     }
   };
 
@@ -63,7 +64,7 @@ const UserOrders = () => {
       );
     } catch (error) {
       console.log("Kunde inte återställa order:", error);
-      alert("Något gick fel. Försök igen.");
+      toast.error("Något gick fel. Försök igen.");
     }
   };
 
@@ -73,7 +74,7 @@ const UserOrders = () => {
       setOrders((prev) => prev.filter((order) => order.id !== orderId));
     } catch (error) {
       console.error("Kunde inte ta bort order:", error);
-      alert("Något gick fel. Försök igen.");
+      toast.error("Något gick fel. Försök igen.");
     }
   };
 
