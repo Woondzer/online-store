@@ -11,7 +11,7 @@ import { useIcons } from "../contexts/IconContext";
 function Footer() {
   const icons = useIcons();
   return (
-    <footer className="bg-base-200 text-base-content p-11">
+    <footer className="bg-[#303030] text-base-content p-11">
       <div className="container mx-auto flex flex-wrap justify-between items-start gap-x-16 max-w-screen-2xl">
         <nav>
           <img src={icons.VRlogo} alt="VR Experience logo" />

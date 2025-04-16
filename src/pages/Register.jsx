@@ -61,7 +61,7 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full h-full p-10 bg-[#f5f5f5]">
+    <div className="w-full h-full p-10 bg-[#f5f5f5] text-black">
       <div className="max-w-lg mx-auto p-6 bg-white rounded shadow-md">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-700">
           Skapa konto

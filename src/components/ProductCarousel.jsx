@@ -3,7 +3,7 @@ import { useImages } from "../contexts/CarouselContext";
 import { NavLink } from "react-router-dom";
 import { useProducts } from "../contexts/ProductsContext";
 
-// SESSION STORAGE LÖSER EVENTUELLT PROBLEMET VID REFRESH ATT KARUSELLEN FÖRSVINNER; KOLLA DETTA!!!
+//undersök varför karusellen försvinner
 const ProductCarousel = ({ folder }) => {
   const { fetchFolderImages } = useImages();
   const { isLoaded: productsLoaded } = useProducts();
