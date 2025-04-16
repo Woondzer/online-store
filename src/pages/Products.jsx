@@ -104,7 +104,7 @@ const Products = () => {
           <div className="text-center mt-6">
             <NavLink
               to="/games"
-              className="btn bg-[#FF9900] hover:bg-black hover:text-[#FF9900] text-black font-semibold rounded px-6 border-none"
+              className="btn btn-success  text-white font-semibold rounded px-6 border-none"
             >
               Se fler
             </NavLink>

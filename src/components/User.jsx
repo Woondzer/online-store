@@ -75,7 +75,9 @@ function User() {
           </span>
         </li>
         <li>
-          <a className="justify-between">Profil</a>
+          <a className="justify-between">
+            Profil <span className="text-red-300">(kommer snart)</span>
+          </a>
         </li>
         <li>
           <a onClick={() => navigate("/my-orders")}>Mina ordrar</a>
